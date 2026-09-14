@@ -1,0 +1,1 @@
+Apenas para imagens, ícones e estilos.

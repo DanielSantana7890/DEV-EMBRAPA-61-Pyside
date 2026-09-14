@@ -1,0 +1,1 @@
+Apenas para regras de negócio e integrações.

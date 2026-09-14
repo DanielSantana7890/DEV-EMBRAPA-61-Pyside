@@ -1,0 +1,1 @@
+Apenas para janelas, diálogos e widgets da interface.
