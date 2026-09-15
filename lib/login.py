@@ -2,7 +2,13 @@
 # TASK 48 (SPRINT 1) by: Hillgner
 # TASK 49 (SPRINT 1) by: Joao Guilherme Cerbino
 #=============================================================
-
+#  CONTAS:    
+#admin@gmail.com
+#comite@gmail.com
+#avaliador@gmail.com
+#pesquisador@gmail.com
+#doiscargos@gmail.com
+#=============================================================
 import os
 import sys
 from PySide6.QtWidgets import QStackedWidget
@@ -39,6 +45,63 @@ CAMINHO_FUNDO = os.path.join(
     "imagens",
     "background.png"
 )
+
+
+CARGOS_POR_EMAIL = {
+    "admin@gmail.com": ["Administrador"],
+    "comite@gmail.com": ["Comite"],
+    "avaliador@gmail.com": ["Avaliador"],
+    "pesquisador@gmail.com": ["Pesquisador"],
+    "doiscargos@gmail.com": ["Pesquisador", "Comite"],
+}
+
+
+LOGO = "../Imagens/logo_embrapa.png"
+FECHAR = "../Imagens/Vector.png"
+BACKGROUND = "../Imagens/background.png"
+VERDE = "#058914"
+BRANCO = "#FFFFFF"
+PRETO = "#000000"
+QSS = f"""
+QFrame{{background-image:url({BACKGROUND});
+}}
+
+QLabel#sub_t{{
+    font-weight: bold;
+    font-size: 20px;
+    background : transparent;
+    font-family: Verdana;
+
+ }}
+QLabel#Botao_fechar{{
+    background: none;
+}}
+
+QLabel#Logo{{max-width :476px;
+    max-height: 206px;
+}}
+
+QPushButton#butao{{
+    background-color: {VERDE};
+    color:{BRANCO};
+    font-size: 20px;
+    font-family: Verdana;
+    font-weight: bold;
+
+}}
+
+QWidget#Painel{{
+    background-color: {BRANCO};
+    border: 3px solid {PRETO};
+    border-radius: 10px;
+}}
+
+QLineEdit#Input_pin{{
+    min-width:612px ;
+    min-height:40px ;
+}}
+"""
+
 
 class FundoOndulado(QWidget):
 
@@ -104,9 +167,9 @@ class FundoOndulado(QWidget):
             painter.setBrush(cor)
             painter.drawPath(caminho)
 
+
 class TelaAutenticacaoBase(FundoOndulado):
 
-   
     LARGURA_TELA = 1280
     ALTURA_TELA = 720
     LARGURA_CARD = 1011
@@ -151,9 +214,10 @@ class TelaAutenticacaoBase(FundoOndulado):
         label_logo.setAlignment(Qt.AlignCenter)
         return label_logo
 
+
 class LoginScreen(TelaAutenticacaoBase):
 
-    login_solicitado = Signal(str)
+    login_solicitado = Signal(str)  
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -190,11 +254,7 @@ class LoginScreen(TelaAutenticacaoBase):
         card_layout.addWidget(subtitulo)
         card_layout.addSpacing(40)
 
-        self.campo_email = QLineEdit()
-        self.campo_email.setPlaceholderText("Digite seu E-mail aqui.")
-        self.campo_email.setFixedSize(612, 99)
-
-        self.campo_email.setStyleSheet("""
+        ESTILO_CAMPO = """
             QLineEdit {
                 background-color: #FFFFFF;
                 color: #1C1C1C;
@@ -207,7 +267,12 @@ class LoginScreen(TelaAutenticacaoBase):
             QLineEdit:focus {
                 border: 2px solid #D0D0D0;
             }
-        """)
+        """
+
+        self.campo_email = QLineEdit()
+        self.campo_email.setPlaceholderText("Digite seu E-mail aqui.")
+        self.campo_email.setFixedSize(612, 99)
+        self.campo_email.setStyleSheet(ESTILO_CAMPO)
         self.campo_email.returnPressed.connect(self._entrar)
 
         card_layout.addWidget(self.campo_email, 0, Qt.AlignCenter)
@@ -237,100 +302,12 @@ class LoginScreen(TelaAutenticacaoBase):
 
         card_layout.addWidget(botao_entrar, 0, Qt.AlignCenter)
 
- 
     def _entrar(self):
         email = self.campo_email.text().strip()
         self.login_solicitado.emit(email)
 
     def limpar(self):
         self.campo_email.clear()
-
-def _ao_logar_com_sucesso(email):
-    pass
-
-def main():
-    app = QApplication(sys.argv)
-    app.setStyleSheet("""
-        QWidget { font-family: 'Segoe UI'; color: #1C1C1C; }
-    """)
-
-    janela = QMainWindow()
-    janela.setWindowTitle("Embrapa Gado de Corte — Login")
-    janela.resize(1280, 720)
-    janela.setMinimumSize(1024, 600)
-
-    pilha = QStackedWidget()
-    tela_login = LoginScreen()
-    tela_pin = PinScreen()
-
-    pilha.addWidget(tela_login)  
-    pilha.addWidget(tela_pin)    
-
-    def ir_para_pin(email):
-        tela_pin.email_atual = email  
-        pilha.setCurrentWidget(tela_pin)
-
-    tela_login.login_solicitado.connect(ir_para_pin)
-
-    janela.setCentralWidget(pilha)
-    janela.show()
-    sys.exit(app.exec())
-
-
-#=========================================================================
-
-
-LOGO = "../Imagens/logo_embrapa.png"
-FECHAR = "../Imagens/Vector.png"
-
-
-BACKGROUND = "../Imagens/background.png"
-VERDE =  "#058914"
-BRANCO = "#FFFFFF"
-PRETO = "#000000"
-QSS = f"""
-QFrame{{background-image:url({BACKGROUND});
-}}
-
-QLabel#sub_t{{
-    font-weight: bold;
-    font-size: 20px;
-    background : transparent;
-    font-family: Verdana;
-    
- }}
-QLabel#Botao_fechar{{
-    background: none;
-}}
-
-QLabel#Logo{{max-width :476px;
-    max-height: 206px;
-}}
-
-QPushButton#butao{{ 
-    background-color: {VERDE};
-    color:{BRANCO};
-    font-size: 20px;
-    font-family: Verdana;
-    font-weight: bold;
-    
-}}
-
-QWidget#Painel{{
-    background-color: {BRANCO};
-    border: 3px solid {PRETO};
-    border-radius: 10px;
-}}
-
-QLineEdit#Input_pin{{
-    min-width:612px ;
-    min-height:40px ;
-}}
-
-
-"""
-
-
 
 
 class PinScreen(TelaAutenticacaoBase):
@@ -367,7 +344,15 @@ class PinScreen(TelaAutenticacaoBase):
         """)
         self.campo_pin.returnPressed.connect(self._verificar)
         card_layout.addWidget(self.campo_pin, 0, Qt.AlignCenter)
-        card_layout.addSpacing(30)
+        card_layout.addSpacing(15)
+
+        self.label_erro = QLabel("")
+        self.label_erro.setStyleSheet("""
+            QLabel { color: #C0392B; font-size: 14px; border: none; }
+        """)
+        self.label_erro.setAlignment(Qt.AlignCenter)
+        card_layout.addWidget(self.label_erro)
+        card_layout.addSpacing(15)
 
         botao_verificar = QPushButton("VERIFICAR")
         botao_verificar.setCursor(Qt.PointingHandCursor)
@@ -383,12 +368,225 @@ class PinScreen(TelaAutenticacaoBase):
         card_layout.addWidget(botao_verificar, 0, Qt.AlignCenter)
 
     def _verificar(self):
+        self.label_erro.setText("")
         pin = self.campo_pin.text().strip()
         self.pin_verificado.emit(pin)
 
+    def mostrar_erro(self, mensagem):
+        self.label_erro.setText(mensagem)
+
+    def limpar(self):
+        self.campo_pin.clear()
+        self.label_erro.setText("")
 
 
+class SelecionarCargoScreen(TelaAutenticacaoBase):
+    """
+    Exibida quando o e-mail informado está vinculado a mais de um
+    cargo (ex.: Pesquisador e Comite). O usuário escolhe qual cargo
+    deseja acessar para seguir até a página central.
+    """
 
+    cargo_selecionado = Signal(str)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        _, card_layout = self._montar_card()
+        card_layout.setContentsMargins(100, 60, 100, 60)
+        card_layout.setSpacing(0)
+        card_layout.setAlignment(Qt.AlignCenter)
+
+        logo = self._logo()
+        card_layout.addWidget(logo)
+        card_layout.addSpacing(30)
+
+        titulo = QLabel("Mais de um cargo encontrado")
+        titulo.setStyleSheet("""
+            QLabel {
+                font-size: 28px;
+                font-weight: 800;
+                color: #111111;
+                border: none;
+            }
+        """)
+        titulo.setAlignment(Qt.AlignCenter)
+        card_layout.addWidget(titulo)
+        card_layout.addSpacing(10)
+
+        self.label_mensagem = QLabel("")
+        self.label_mensagem.setStyleSheet("""
+            QLabel {
+                color: #6B7280;
+                font-size: 18px;
+                border: none;
+            }
+        """)
+        self.label_mensagem.setAlignment(Qt.AlignCenter)
+        self.label_mensagem.setWordWrap(True)
+        card_layout.addWidget(self.label_mensagem)
+        card_layout.addSpacing(40)
+
+        self._container_botoes = QWidget()
+        self._layout_botoes = QVBoxLayout(self._container_botoes)
+        self._layout_botoes.setSpacing(20)
+        self._layout_botoes.setAlignment(Qt.AlignCenter)
+        card_layout.addWidget(self._container_botoes)
+
+    def definir_cargos(self, cargos):
+        
+        while self._layout_botoes.count():
+            item = self._layout_botoes.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+
+        if len(cargos) == 2:
+            texto_cargos = f"{cargos[0]} e {cargos[1]}"
+        else:
+            texto_cargos = ", ".join(cargos[:-1]) + f" e {cargos[-1]}"
+
+        self.label_mensagem.setText(
+            f"Este e-mail está vinculado a {len(cargos)} cargos: "
+            f"{texto_cargos}.\nSelecione qual deseja acessar."
+        )
+
+        for cargo in cargos:
+            botao = QPushButton(cargo.upper())
+            botao.setCursor(Qt.PointingHandCursor)
+            botao.setFixedSize(530, 84)
+            botao.setStyleSheet("""
+                QPushButton {
+                    background-color: #058914;
+                    color: white;
+                    border: none;
+                    border-radius: 9px;
+                    font-size: 22px;
+                    font-weight: 700;
+                }
+                QPushButton:hover {
+                    background-color: #04620F;
+                }
+                QPushButton:pressed {
+                    background-color: #04620F;
+                }
+            """)
+            botao.clicked.connect(
+                lambda _checked=False, c=cargo: self.cargo_selecionado.emit(c)
+            )
+            self._layout_botoes.addWidget(botao, 0, Qt.AlignCenter)
+
+
+class TelaBemVindo(TelaAutenticacaoBase):
+    """
+    Placeholder para a página central. Troque o conteúdo de
+    definir_usuario() pela navegação real para o dashboard de
+    cada cargo (Administrador, Avaliador, Comite, Pesquisador).
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        _, card_layout = self._montar_card()
+        card_layout.setContentsMargins(100, 60, 100, 60)
+        card_layout.setSpacing(0)
+        card_layout.setAlignment(Qt.AlignCenter)
+
+        logo = self._logo()
+        card_layout.addWidget(logo)
+        card_layout.addSpacing(30)
+
+        self.label_boas_vindas = QLabel("")
+        self.label_boas_vindas.setStyleSheet("""
+            QLabel {
+                font-size: 32px;
+                font-weight: 800;
+                color: #111111;
+                border: none;
+            }
+        """)
+        self.label_boas_vindas.setAlignment(Qt.AlignCenter)
+        card_layout.addWidget(self.label_boas_vindas)
+        card_layout.addSpacing(10)
+
+        self.label_cargo = QLabel("")
+        self.label_cargo.setStyleSheet("""
+            QLabel {
+                color: #6B7280;
+                font-size: 18px;
+                border: none;
+            }
+        """)
+        self.label_cargo.setAlignment(Qt.AlignCenter)
+        self.label_cargo.setWordWrap(True)
+        card_layout.addWidget(self.label_cargo)
+
+    def definir_usuario(self, cargo):
+        self.label_boas_vindas.setText("Login realizado com sucesso!")
+        self.label_cargo.setText(
+            f"Você entrou como: {cargo}\n"
+            f"SISTEMA: navegar para o dashboard de {cargo}"
+        )
+
+
+def _ao_logar_com_sucesso(email):
+    pass
+
+
+def main():
+    app = QApplication(sys.argv)
+    app.setStyleSheet("""
+        QWidget { font-family: 'Segoe UI'; color: #1C1C1C; }
+    """)
+
+    janela = QMainWindow()
+    janela.setWindowTitle("Embrapa Gado de Corte — Login")
+    janela.resize(1280, 720)
+    janela.setMinimumSize(1024, 600)
+
+    pilha = QStackedWidget()
+    tela_login = LoginScreen()
+    tela_pin = PinScreen()
+    tela_selecionar_cargo = SelecionarCargoScreen()
+    tela_bem_vindo = TelaBemVindo()
+
+    pilha.addWidget(tela_login)
+    pilha.addWidget(tela_pin)
+    pilha.addWidget(tela_selecionar_cargo)
+    pilha.addWidget(tela_bem_vindo)
+
+    def ir_para_pin(email):
+        tela_pin.email_atual = email
+        tela_pin.limpar()
+        pilha.setCurrentWidget(tela_pin)
+
+    def ao_verificar_pin(pin):
+        email = getattr(tela_pin, "email_atual", "").strip().lower()
+
+        cargos = CARGOS_POR_EMAIL.get(email)
+
+        if not cargos:
+            tela_pin.mostrar_erro("E-mail não encontrado ou sem cargo vinculado.")
+            return
+
+        if len(cargos) == 1:
+            tela_bem_vindo.definir_usuario(cargos[0])
+            pilha.setCurrentWidget(tela_bem_vindo)
+        else:
+            tela_selecionar_cargo.definir_cargos(cargos)
+            pilha.setCurrentWidget(tela_selecionar_cargo)
+
+    def ao_selecionar_cargo(cargo):
+        tela_bem_vindo.definir_usuario(cargo)
+        pilha.setCurrentWidget(tela_bem_vindo)
+
+    tela_login.login_solicitado.connect(ir_para_pin)
+    tela_pin.pin_verificado.connect(ao_verificar_pin)
+    tela_selecionar_cargo.cargo_selecionado.connect(ao_selecionar_cargo)
+
+    janela.setCentralWidget(pilha)
+    janela.show()
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":
